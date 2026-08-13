@@ -1,0 +1,89 @@
+2026-08-13 11:01:37.933  INFO 25016 --- [main] c.i.d.DiabHealthSys01Application         : Starting DiabHealthSys01Application using Java 17.0.2 on LAPTOP-3N4R9PTI with PID 25016 (D:\IDEAProject\diab_health_sys01\target\classes started by Lenovo in D:\IDEAProject\diab_health_sys01)
+2026-08-13 11:01:37.935  INFO 25016 --- [main] c.i.d.DiabHealthSys01Application         : No active profile set, falling back to 1 default profile: "default"
+2026-08-13 11:01:38.338  INFO 25016 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-08-13 11:01:38.339  INFO 25016 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-08-13 11:01:38.353  INFO 25016 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2026-08-13 11:01:38.568  INFO 25016 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$d12d7ee] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-08-13 11:01:38.599  INFO 25016 --- [main] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2026-08-13 11:01:38.827  INFO 25016 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-08-13 11:01:38.833  INFO 25016 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-13 11:01:38.834  INFO 25016 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+2026-08-13 11:01:38.930  INFO 25016 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-08-13 11:01:38.931  INFO 25016 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 968 ms
+2026-08-13 11:01:39.178  WARN 25016 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 60469981-7118-430b-b4d2-c934618ea37d
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-13 11:01:39.252  INFO 25016 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5122e4bf, org.springframework.security.web.context.SecurityContextPersistenceFilter@93bf0e0, org.springframework.security.web.header.HeaderWriterFilter@546ed2a0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6b867ee7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3dec3f87, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@23e61112, org.springframework.security.web.session.SessionManagementFilter@3bbf1c0d, org.springframework.security.web.access.ExceptionTranslationFilter@2726a511, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@454bcbbf]
+2026-08-13 11:01:39.582  INFO 25016 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-08-13 11:01:39.969  INFO 25016 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-08-13 11:01:39.980  INFO 25016 --- [main] c.i.d.DiabHealthSys01Application         : Started DiabHealthSys01Application in 2.253 seconds (JVM running for 2.71)
+2026-08-13 11:01:43.239  INFO 25016 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-13 11:01:43.240  INFO 25016 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-13 11:01:43.241  INFO 25016 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-08-13 11:01:43.327  INFO 25016 --- [http-nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-13 11:01:43.424  INFO 25016 --- [http-nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-13 11:14:37.031  INFO 25016 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-13 11:14:37.038  INFO 25016 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-13 11:37:13.060  INFO 7520 --- [main] c.i.d.DiabHealthSys01Application         : Starting DiabHealthSys01Application using Java 17.0.2 on LAPTOP-3N4R9PTI with PID 7520 (D:\IDEAProject\diab_health_sys01\target\classes started by Lenovo in D:\IDEAProject\diab_health_sys01)
+2026-08-13 11:37:13.062  INFO 7520 --- [main] c.i.d.DiabHealthSys01Application         : No active profile set, falling back to 1 default profile: "default"
+2026-08-13 11:37:13.584  INFO 7520 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-08-13 11:37:13.586  INFO 7520 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-08-13 11:37:13.602  INFO 7520 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 Redis repository interfaces.
+2026-08-13 11:37:13.845  INFO 7520 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$683a3f43] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-08-13 11:37:13.878  INFO 7520 --- [main] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2026-08-13 11:37:14.141  INFO 7520 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-08-13 11:37:14.148  INFO 7520 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-13 11:37:14.149  INFO 7520 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+2026-08-13 11:37:14.242  INFO 7520 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-08-13 11:37:14.242  INFO 7520 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1149 ms
+2026-08-13 11:37:14.562  WARN 7520 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 46341b68-685e-4ef2-9c8c-f5f2510c8951
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-13 11:37:14.642  INFO 7520 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2fde9469, org.springframework.security.web.context.SecurityContextPersistenceFilter@203e705e, org.springframework.security.web.header.HeaderWriterFilter@6aea99e7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5763a655, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@40c8067, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1ecf0ac6, org.springframework.security.web.session.SessionManagementFilter@45c80312, org.springframework.security.web.access.ExceptionTranslationFilter@3a40bb52, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@11c581a0]
+2026-08-13 11:37:14.983  INFO 7520 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-08-13 11:37:15.421  INFO 7520 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-08-13 11:37:15.429  INFO 7520 --- [main] c.i.d.DiabHealthSys01Application         : Started DiabHealthSys01Application in 2.617 seconds (JVM running for 3.07)
+2026-08-13 11:37:25.813  INFO 7520 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-13 11:37:25.813  INFO 7520 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-13 11:37:25.813  INFO 7520 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-08-13 11:38:06.754  INFO 7520 --- [http-nio-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-13 11:38:07.064  INFO 7520 --- [http-nio-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-13 11:38:28.143  WARN 7520 --- [http-nio-8080-exec-5] c.i.d.common.GlobalExceptionHandler      : 业务异常[401] 用户名或密码错误 - /api/auth/login
+2026-08-13 11:38:42.612  WARN 7520 --- [http-nio-8080-exec-6] c.i.d.common.GlobalExceptionHandler      : 业务异常[401] 用户名或密码错误 - /api/auth/login
+2026-08-13 11:47:03.226  INFO 7520 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-13 11:47:03.232  INFO 7520 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-13 15:40:53.300  INFO 24736 --- [main] c.i.d.DiabHealthSys01Application         : Starting DiabHealthSys01Application using Java 17.0.2 on LAPTOP-3N4R9PTI with PID 24736 (D:\IDEAProject\diab_health_sys01\target\classes started by Lenovo in D:\IDEAProject\diab_health_sys01)
+2026-08-13 15:40:53.302  INFO 24736 --- [main] c.i.d.DiabHealthSys01Application         : No active profile set, falling back to 1 default profile: "default"
+2026-08-13 15:40:54.029  INFO 24736 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-08-13 15:40:54.032  INFO 24736 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-08-13 15:40:54.061  INFO 24736 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
+2026-08-13 15:40:54.385  INFO 24736 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$7447ee60] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-08-13 15:40:54.438  INFO 24736 --- [main] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2026-08-13 15:40:54.727  INFO 24736 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-08-13 15:40:54.736  INFO 24736 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-13 15:40:54.736  INFO 24736 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.68]
+2026-08-13 15:40:54.829  INFO 24736 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-08-13 15:40:54.830  INFO 24736 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1486 ms
+2026-08-13 15:40:55.130  WARN 24736 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 76b67239-675b-448c-a55c-454e6d4ed327
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-13 15:40:55.236  INFO 24736 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@561f9d92, org.springframework.security.web.context.SecurityContextPersistenceFilter@3a3f96ab, org.springframework.security.web.header.HeaderWriterFilter@b022551, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@67f946c3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@21b51e59, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1c84d80a, org.springframework.security.web.session.SessionManagementFilter@2b999ee8, org.springframework.security.web.access.ExceptionTranslationFilter@4602f874, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6aae0e6f]
+2026-08-13 15:40:55.587  INFO 24736 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-08-13 15:40:56.036  INFO 24736 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-08-13 15:40:56.046  INFO 24736 --- [main] c.i.d.DiabHealthSys01Application         : Started DiabHealthSys01Application in 3.147 seconds (JVM running for 3.739)
+2026-08-13 15:42:04.666  INFO 24736 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-13 15:42:04.666  INFO 24736 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-13 15:42:04.667  INFO 24736 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-08-13 15:42:04.829  INFO 24736 --- [http-nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-13 15:42:05.065  INFO 24736 --- [http-nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-13 15:42:40.190  INFO 24736 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-13 15:42:40.196  INFO 24736 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

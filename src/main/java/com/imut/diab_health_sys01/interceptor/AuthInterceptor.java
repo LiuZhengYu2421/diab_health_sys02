@@ -31,12 +31,18 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 公开浏览接口（后端接口文档 11.2 方案一）：医生/文章/糖尿病类型 的列表与详情无需登录
+        if (isPublicRequest(request)) {
+            return true;
+        }
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             writeUnauthorized(response, "未登录或登录已过期");
             return false;
         }
         String token = header.substring(7).trim();
+//        从0-6截断 7开始录入
+//        System.out.println(token);
         Map<String, Object> payload = jwtUtil.parseToken(token);
         if (payload == null || payload.get("userId") == null) {
             writeUnauthorized(response, "未登录或登录已过期");
@@ -46,6 +52,33 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute(ATTR_USERNAME, payload.get("username"));
         request.setAttribute(ATTR_ROLE, payload.get("role"));
         return true;
+    }
+
+    /**
+     * 公开浏览接口判断（无需登录，对应后端接口文档 11.2 方案一）：
+     * GET /doctors、/doctors/{id}、/articles、/articles/categories、/articles/{id}、
+     * /diabetes-types、/diabetes-types/{id}
+     * 注意：文章收藏相关接口（/articles/favorites、/articles/{id}/favorite/status 等）仍需登录。
+     */
+    private boolean isPublicRequest(HttpServletRequest request) {
+        if (!"GET".equals(request.getMethod())) {
+            return false;
+        }
+        String uri = request.getRequestURI();
+        String ctx = request.getContextPath();
+        if (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx)) {
+            uri = uri.substring(ctx.length());
+        }
+        if (uri.equals("/doctors") || uri.matches("/doctors/\\d+")) {
+            return true;
+        }
+        if (uri.equals("/articles") || uri.equals("/articles/categories") || uri.matches("/articles/\\d+")) {
+            return true;
+        }
+        if (uri.equals("/diabetes-types") || uri.matches("/diabetes-types/\\d+")) {
+            return true;
+        }
+        return false;
     }
 
     private void writeUnauthorized(HttpServletResponse response, String message) throws Exception {

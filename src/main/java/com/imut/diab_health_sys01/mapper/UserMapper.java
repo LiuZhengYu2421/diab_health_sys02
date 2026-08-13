@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 /**
  * 用户表 Mapper
  */
@@ -17,6 +19,10 @@ public interface UserMapper {
     @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, created_at " +
             "FROM users WHERE username = #{username}")
     User findByUsername(@Param("username") String username);
+
+    @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, created_at " +
+            "FROM users ORDER BY user_id")
+    List<User> findAll();
 
     @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, created_at " +
             "FROM users WHERE user_id = #{userId}")

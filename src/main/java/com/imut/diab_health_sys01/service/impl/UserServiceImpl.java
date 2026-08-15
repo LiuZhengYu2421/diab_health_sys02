@@ -36,9 +36,13 @@ public class UserServiceImpl implements UserService {
         if (request.getPassword() == null || request.getPassword().isEmpty()) {
             throw BizException.badRequest("密码不能为空");
         }
-        User user = userMapper.findByUsername(request.getUsername().trim());
+        User user = userMapper.findByUsernameAnyStatus(request.getUsername().trim());
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw BizException.unauthorized("用户名或密码错误");
+        }
+        if (user.getStatus() != null && user.getStatus() == 1) {
+            // 账户已被软删除（冻结），禁止登录
+            throw BizException.forbidden("账户存在异常请联系管理员");
         }
         return buildLoginResult(user);
     }
@@ -63,6 +67,7 @@ public class UserServiceImpl implements UserService {
                 ? username : request.getNickname().trim());
         user.setPassword(passwordEncoder.encode(password));
         user.setAvatarUrl("/img/user_icon.png");
+        user.setRole("user");
         userMapper.insert(user);
         // 重新查询以获取数据库生成的 createdAt 等字段
         user = userMapper.findById(user.getUserId());
@@ -99,6 +104,7 @@ public class UserServiceImpl implements UserService {
                 || request.getNewPassword().length() > 32) {
             throw BizException.badRequest("新密码长度需为 6-32 位");
         }
+//        初步校验一下用户输入的新旧密码是否相同，而不是从数据库中拿
         if (request.getOldPassword().equals(request.getNewPassword())) {
             throw BizException.badRequest("新密码不能与原密码相同");
         }
@@ -111,7 +117,8 @@ public class UserServiceImpl implements UserService {
 
     private User requireUser(Integer userId) {
         User user = userMapper.findById(userId);
-        if (user == null) {
+        if (user == null || (user.getStatus() != null && user.getStatus() == 1)) {
+            // 用户不存在或已被软删除
             throw BizException.notFound("用户不存在");
         }
         return user;

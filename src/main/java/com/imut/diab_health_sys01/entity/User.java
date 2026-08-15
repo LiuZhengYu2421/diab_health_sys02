@@ -30,6 +30,9 @@ public class User {
     /** 角色：user / doctor / admin，注册默认 user */
     private String role;
 
+    /** 状态：0 正常 / 1 已删除（软删除） */
+    private Integer status;
+
     /** 注册时间 */
     private LocalDateTime createdAt;
 }

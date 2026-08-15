@@ -1,128 +1,199 @@
--- =====================================================
--- 糖尿病健康管理平台 数据库表结构
--- 数据库类型：MySQL 5.7+ / 8.0
--- 生成日期：2026-08-12
--- 说明：Navicat 中直接运行；存储引擎 InnoDB，字符集 utf8mb4
--- =====================================================
+/*
+ Navicat Premium Data Transfer
 
--- 创建用户表
--- role 字段：user=普通用户 / doctor=医生 / admin=管理员（注册默认 user）
-CREATE TABLE IF NOT EXISTS `users` (
-    `user_id`    INT AUTO_INCREMENT PRIMARY KEY,
-    `username`   VARCHAR(100) NOT NULL UNIQUE,
-    `password`   VARCHAR(255) NOT NULL,
-    `avatar_url` VARCHAR(255),
-    `role`       VARCHAR(20) NOT NULL DEFAULT 'user'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ Source Server         : c5_ciyon
+ Source Server Type    : MySQL
+ Source Server Version : 80041 (8.0.41)
+ Source Host           : localhost:3306
+ Source Schema         : schema-mysql
 
--- 创建医生资讯表
-CREATE TABLE IF NOT EXISTS `doctor_information` (
-    `info_id`      INT AUTO_INCREMENT PRIMARY KEY,
-    `doctor_name`  VARCHAR(100) NOT NULL,
-    `department`   VARCHAR(100),
-    `title`        VARCHAR(100),
-    `introduction` TEXT,
-    `image_url`    VARCHAR(255),
-    `chat_token`   VARCHAR(255)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ Target Server Type    : MySQL
+ Target Server Version : 80041 (8.0.41)
+ File Encoding         : 65001
 
--- 创建文章科普表
-CREATE TABLE IF NOT EXISTS `articles` (
-    `article_id`   INT AUTO_INCREMENT PRIMARY KEY,
-    `title`        VARCHAR(255) NOT NULL,
-    `cover_url`    VARCHAR(255),
-    `author`       VARCHAR(100) NOT NULL,
-    `publish_time` DATETIME NOT NULL,
-    `content`      LONGTEXT NOT NULL,
-    `category`     VARCHAR(100),
-    `views`        INT DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ Date: 13/08/2026 11:35:41
+*/
 
--- 创建糖尿病种类表
-CREATE TABLE IF NOT EXISTS `diabetes_types` (
-    `type_id`       INT AUTO_INCREMENT PRIMARY KEY,
-    `type_name`     VARCHAR(100) NOT NULL,
-    `img`           VARCHAR(255),
-    `pathogenesis`  TEXT,
-    `manifestation` TEXT,
-    `treatment`     TEXT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
--- 创建文章收藏表
-CREATE TABLE IF NOT EXISTS `article_collections` (
-    `collection_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id`       INT,
-    `article_id`    INT,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
-    FOREIGN KEY (`article_id`) REFERENCES `articles`(`article_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ----------------------------
+-- Table structure for article_collections
+-- ----------------------------
+DROP TABLE IF EXISTS `article_collections`;
+CREATE TABLE `article_collections`  (
+  `collection_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NULL DEFAULT NULL,
+  `article_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`collection_id`) USING BTREE,
+  INDEX `user_id`(`user_id` ASC) USING BTREE,
+  INDEX `article_id`(`article_id` ASC) USING BTREE,
+  CONSTRAINT `article_collections_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `article_collections_ibfk_2` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- 创建用户风险信息表
-CREATE TABLE IF NOT EXISTS `user_risk_info` (
-    `userId`           INT AUTO_INCREMENT PRIMARY KEY,
-    `age`              INT,
-    `sex`              VARCHAR(10),
-    `height`           DOUBLE,
-    `weight`           DOUBLE,
-    `familyHistory`    TEXT,
-    `waistline`        DOUBLE,
-    `systolicPressure` DOUBLE,
-    `isPregnancy`      VARCHAR(10),
-    `message`          TEXT,
-    `disease`          TEXT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ----------------------------
+-- Records of article_collections
+-- ----------------------------
 
--- 创建生活方案表
-CREATE TABLE IF NOT EXISTS `life_plans` (
-    `id`      INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `type`    VARCHAR(20) CHECK (`type` IN ('饮食', '运动', '其他')) NOT NULL,
-    `order`   INT NOT NULL,
-    `time`    VARCHAR(100) NOT NULL,
-    `title`   VARCHAR(255) NOT NULL,
-    `content` TEXT NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ----------------------------
+-- Table structure for articles
+-- ----------------------------
+DROP TABLE IF EXISTS `articles`;
+CREATE TABLE `articles`  (
+  `article_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cover_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `author` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `publish_time` datetime NOT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `views` int NULL DEFAULT 0,
+  PRIMARY KEY (`article_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- 创建生活建议表
-CREATE TABLE IF NOT EXISTS `life_advice` (
-    `id`      INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `title`   VARCHAR(255),
-    `tags`    VARCHAR(255),
-    `content` TEXT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ----------------------------
+-- Records of articles
+-- ----------------------------
 
--- 创建打卡记录表
-CREATE TABLE IF NOT EXISTS `punch_in` (
-    `id`                INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id`           INT NOT NULL,
-    `punch_time`        DATETIME NOT NULL,
-    `punch_type`        VARCHAR(50) NOT NULL,
-    `completion_status` VARCHAR(50) NOT NULL,
-    `message`           VARCHAR(500)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ----------------------------
+-- Table structure for diabetes_types
+-- ----------------------------
+DROP TABLE IF EXISTS `diabetes_types`;
+CREATE TABLE `diabetes_types`  (
+  `type_id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `pathogenesis` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `manifestation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `treatment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`type_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- =====================================================
--- 以下为【老库升级】语句：仅当 users 表已存在且没有 role 字段时执行
--- =====================================================
--- ALTER TABLE `users` ADD COLUMN `role` VARCHAR(20) NOT NULL DEFAULT 'user';
+-- ----------------------------
+-- Records of diabetes_types
+-- ----------------------------
 
--- =====================================================
--- 以下为【初始数据】示例（可选执行）
--- =====================================================
+-- ----------------------------
+-- Table structure for doctor_information
+-- ----------------------------
+DROP TABLE IF EXISTS `doctor_information`;
+CREATE TABLE `doctor_information`  (
+  `info_id` int NOT NULL AUTO_INCREMENT,
+  `doctor_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `department` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `introduction` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `chat_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`info_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- 初始管理员账号：admin / admin123（密码请部署后自行修改）
--- INSERT INTO `users` (`username`, `password`, `avatar_url`, `role`)
--- VALUES ('admin', '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', '/img/user_icon.png', 'admin');
+-- ----------------------------
+-- Records of doctor_information
+-- ----------------------------
 
--- 初始医生示例
--- INSERT INTO `doctor_information` (`doctor_name`, `department`, `title`, `introduction`, `image_url`, `chat_token`)
--- VALUES
--- ('李建华', '内分泌科', '主任医师', '从事糖尿病临床诊疗 25 年，擅长 2 型糖尿病综合管理。', '/img/doc1.jpg', ''),
--- ('王芳', '营养科', '副主任医师', '专注糖尿病医学营养治疗（MNT），个性化饮食方案制定。', '/img/doc2.jpg', '');
+-- ----------------------------
+-- Table structure for life_advice
+-- ----------------------------
+DROP TABLE IF EXISTS `life_advice`;
+CREATE TABLE `life_advice`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- 初始糖尿病种类示例
--- INSERT INTO `diabetes_types` (`type_name`, `img`, `pathogenesis`, `manifestation`, `treatment`)
--- VALUES
--- ('1型糖尿病', '/img/t1.jpg', '胰岛素绝对缺乏，多由自身免疫破坏胰岛 β 细胞所致。', '多饮多尿多食、体重下降，起病急。', '终身胰岛素替代治疗。'),
--- ('2型糖尿病', '/img/t2.jpg', '胰岛素抵抗合并相对分泌不足，与遗传、肥胖、缺乏运动相关。', '起病隐匿，多无明显症状，常体检发现。', '生活方式干预 + 口服药或胰岛素。');
+-- ----------------------------
+-- Records of life_advice
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for life_plans
+-- ----------------------------
+DROP TABLE IF EXISTS `life_plans`;
+CREATE TABLE `life_plans`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` int NOT NULL,
+  `time` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  CONSTRAINT `life_plans_chk_1` CHECK (`type` in (_utf8mb4'饮食',_utf8mb4'运动',_utf8mb4'其他'))
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of life_plans
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for punch_in
+-- ----------------------------
+DROP TABLE IF EXISTS `punch_in`;
+CREATE TABLE `punch_in`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `punch_time` datetime NOT NULL,
+  `punch_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `completion_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of punch_in
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for user_risk_info
+-- ----------------------------
+DROP TABLE IF EXISTS `user_risk_info`;
+CREATE TABLE `user_risk_info`  (
+  `userId` int NOT NULL AUTO_INCREMENT,
+  `age` int NULL DEFAULT NULL,
+  `sex` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `height` double NULL DEFAULT NULL,
+  `weight` double NULL DEFAULT NULL,
+  `familyHistory` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `waistline` double NULL DEFAULT NULL,
+  `systolicPressure` double NULL DEFAULT NULL,
+  `isPregnancy` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `disease` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  PRIMARY KEY (`userId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_risk_info
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`  (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '个人简介',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+  PRIMARY KEY (`user_id`) USING BTREE,
+  UNIQUE INDEX `username`(`username` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES (1, 'tester01', '一号用户', '智慧控糖', '$2a$10$AiccUCHuyAvfy92iv.n9wewJfzuiRORv.EzOLc/mPMv3HJU9llv0i', '/img/user_icon.png', 'user', '2026-08-12 15:30:55');
+INSERT INTO `users` VALUES (2, 'tester02', '二号测试', NULL, '$2a$10$VD2G4DgXW3bqKRbFxx2NvuPca4dfUaf4sbvT77vX/7rUSK/o0wDrS', '/img/user_icon.png', 'user', '2026-08-12 15:32:02');
+INSERT INTO `users` VALUES (3, 'lzy', 'lzy', NULL, '$2a$10$302Doa.yZth4BJczLFTQHOP/vBuki.EuxyM5vD3lmyVWLXwWkTcCG', '/img/user_icon.png', 'admin', '2026-08-12 15:43:07');
+INSERT INTO `users` VALUES (4, 'hzp', 'hzp', NULL, '$2a$10$YWAOmEV8VsvhAyK9OAsx7Od2.RMqCdsyTY5iRRUbXYKFC5kWmcEeC', '/img/user_icon.png', 'user', '2026-08-12 16:39:28');
+
+SET FOREIGN_KEY_CHECKS = 1;

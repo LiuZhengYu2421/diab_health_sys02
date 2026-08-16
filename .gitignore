@@ -30,4 +30,17 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.vscode
+
+# 自定义补充
+*.log
+logs/
+spring.log
+application-local.yml
+application-dev.yml
+*.tmp
+*.bak
+
+# windows系统文件
+Thumbs.db
+.DS_Store

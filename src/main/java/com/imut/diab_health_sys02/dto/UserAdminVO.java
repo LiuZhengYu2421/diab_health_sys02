@@ -33,7 +33,7 @@ public class UserAdminVO {
         vo.setStatus(user.getStatus() == null ? 0 : user.getStatus());
         vo.setCreatedAt(user.getCreatedAt() == null
                 ? null
-                : user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                : user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         return vo;
     }
 }

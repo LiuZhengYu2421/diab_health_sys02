@@ -2,16 +2,24 @@ package com.imut.diab_health_sys02.controller;
 
 import com.imut.diab_health_sys02.common.PageResult;
 import com.imut.diab_health_sys02.common.Result;
+import com.imut.diab_health_sys02.dto.PunchCreateRequest;
 import com.imut.diab_health_sys02.dto.PunchStatsVO;
 import com.imut.diab_health_sys02.entity.PunchIn;
 import com.imut.diab_health_sys02.interceptor.AuthInterceptor;
 import com.imut.diab_health_sys02.service.PunchInService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 打卡记录查询与统计分析（需登录，接口 40/41/42）
- * 注：新增打卡 POST /punch-in 属人员三负责，此处不实现
+ * 打卡记录模块（需登录，接口 9.1~9.4）
  */
 @RestController
 @RequestMapping("/punch-in")
@@ -19,6 +27,13 @@ import org.springframework.web.bind.annotation.*;
 public class PunchInController {
 
     private final PunchInService punchInService;
+
+    /** 新增打卡（punch_time 服务端生成，user_id 从 token 解析） */
+    @PostMapping
+    public Result<PunchIn> create(@RequestAttribute(AuthInterceptor.ATTR_USER_ID) Integer userId,
+                                  @RequestBody PunchCreateRequest request) {
+        return Result.success(punchInService.create(userId, request));
+    }
 
     /** 打卡记录列表（分页 + 类型 + 日期范围筛选） */
     @GetMapping

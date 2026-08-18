@@ -7,7 +7,12 @@ import com.imut.diab_health_sys02.dto.UserInfoVO;
 import com.imut.diab_health_sys02.interceptor.AuthInterceptor;
 import com.imut.diab_health_sys02.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 用户接口（需登录，token 由 AuthInterceptor 校验并注入 userId）

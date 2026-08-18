@@ -1,7 +1,11 @@
 package com.imut.diab_health_sys02.service;
 
-
-import com.imut.diab_health_sys02.dto.*;
+import com.imut.diab_health_sys02.dto.ChangePasswordRequest;
+import com.imut.diab_health_sys02.dto.LoginRequest;
+import com.imut.diab_health_sys02.dto.LoginResult;
+import com.imut.diab_health_sys02.dto.RegisterRequest;
+import com.imut.diab_health_sys02.dto.UpdateUserRequest;
+import com.imut.diab_health_sys02.dto.UserInfoVO;
 
 /**
  * 用户认证与信息管理服务

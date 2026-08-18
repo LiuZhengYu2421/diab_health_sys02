@@ -1,20 +1,28 @@
 package com.imut.diab_health_sys02.controller;
 
+import com.imut.diab_health_sys02.common.PageResult;
 import com.imut.diab_health_sys02.common.Result;
 import com.imut.diab_health_sys02.dto.CreateUserRequest;
 import com.imut.diab_health_sys02.dto.UpdateRoleRequest;
 import com.imut.diab_health_sys02.dto.UserAdminVO;
 import com.imut.diab_health_sys02.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * 管理端用户信息管理（/admin/**，由 RoleInterceptor 校验 role=admin）
- * - 用户列表（含已删除，含 status）
+ * - 用户列表（含已删除，含 status，支持分页）
  * - 添加用户
  * - 修改用户角色
  * - 软删除用户
@@ -26,10 +34,12 @@ public class AdminUserController {
 
     private final AdminUserService adminUserService;
 
-    /** 用户列表（含已删除用户，含 status） */
+    /** 用户列表（含已删除用户，含 status；page/pageSize 不传则返回全部） */
     @GetMapping
-    public Result<List<UserAdminVO>> listUsers() {
-        return Result.success(adminUserService.listUsers());
+    public Result<PageResult<UserAdminVO>> listUsers(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize) {
+        return Result.success(adminUserService.listUsers(page, pageSize));
     }
 
     /** 添加用户（可指定角色） */
@@ -37,7 +47,7 @@ public class AdminUserController {
     public Result<Map<String, Object>> createUser(@RequestBody CreateUserRequest request) {
         Integer userId = adminUserService.createUser(request);
         Map<String, Object> data = new HashMap<>();
-        data.put("userId", userId);
+        data.put("id", userId);
         return Result.success("添加成功", data);
     }
 

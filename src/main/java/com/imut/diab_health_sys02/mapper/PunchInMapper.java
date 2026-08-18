@@ -2,7 +2,9 @@ package com.imut.diab_health_sys02.mapper;
 
 import com.imut.diab_health_sys02.entity.PunchIn;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,6 +16,12 @@ import java.util.List;
  */
 @Mapper
 public interface PunchInMapper {
+
+    /** 新增打卡记录（punch_time 由服务端生成） */
+    @Insert("INSERT INTO punch_in (user_id, punch_time, punch_type, completion_status, message) " +
+            "VALUES (#{userId}, #{punchTime}, #{punchType}, #{completionStatus}, #{message})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insert(PunchIn punchIn);
 
     /**
      * 分页查询我的打卡记录（支持 punchType、startDate~endDate 筛选）

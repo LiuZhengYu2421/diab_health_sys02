@@ -1,13 +1,17 @@
 package com.imut.diab_health_sys02.service;
 
 import com.imut.diab_health_sys02.common.PageResult;
+import com.imut.diab_health_sys02.dto.PunchCreateRequest;
 import com.imut.diab_health_sys02.dto.PunchStatsVO;
 import com.imut.diab_health_sys02.entity.PunchIn;
 
 /**
- * 打卡查询与统计服务（接口 40/41/42）
+ * 打卡服务（新增 / 分页查询 / 统计 / 删除）
  */
 public interface PunchInService {
+
+    /** 新增打卡（punch_time 服务端生成，返回完整记录） */
+    PunchIn create(Integer userId, PunchCreateRequest request);
 
     /** 分页查询我的打卡记录 */
     PageResult<PunchIn> list(Integer userId, int page, int pageSize,

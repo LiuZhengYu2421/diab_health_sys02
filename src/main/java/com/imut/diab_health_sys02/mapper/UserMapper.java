@@ -1,7 +1,12 @@
 package com.imut.diab_health_sys02.mapper;
 
 import com.imut.diab_health_sys02.entity.User;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -25,6 +30,15 @@ public interface UserMapper {
     @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, status, created_at " +
             "FROM users ORDER BY user_id")
     List<User> findAll();
+
+    /** 分页查询用户（含已删除，管理端列表，按 id 倒序保证新用户在前） */
+    @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, status, created_at " +
+            "FROM users ORDER BY user_id DESC LIMIT #{offset}, #{limit}")
+    List<User> findAllPage(@Param("offset") int offset, @Param("limit") int limit);
+
+    /** 用户总数（含已删除，管理端分页用） */
+    @Select("SELECT COUNT(*) FROM users")
+    long countAll();
 
     /** 按 id 查询任意用户（含已删除，管理端使用） */
     @Select("SELECT user_id, username, nickname, description, password, avatar_url, role, status, created_at " +

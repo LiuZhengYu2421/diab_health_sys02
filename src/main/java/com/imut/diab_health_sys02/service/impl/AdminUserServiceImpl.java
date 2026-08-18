@@ -1,6 +1,7 @@
 package com.imut.diab_health_sys02.service.impl;
 
 import com.imut.diab_health_sys02.common.BizException;
+import com.imut.diab_health_sys02.common.PageResult;
 import com.imut.diab_health_sys02.dto.CreateUserRequest;
 import com.imut.diab_health_sys02.dto.UserAdminVO;
 import com.imut.diab_health_sys02.entity.User;
@@ -27,10 +28,25 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<UserAdminVO> listUsers() {
-        return userMapper.findAll().stream()
+    public PageResult<UserAdminVO> listUsers(Integer page, Integer pageSize) {
+        // 未传分页参数时返回全部用户，保持旧行为
+        if (page == null || pageSize == null) {
+            List<UserAdminVO> all = userMapper.findAll().stream()
+                    .map(UserAdminVO::from)
+                    .collect(Collectors.toList());
+            return PageResult.of(all, all.size(), 1, Math.max(1, all.size()));
+        }
+        if (page < 1) {
+            page = 1;
+        }
+        if (pageSize < 1 || pageSize > 100) {
+            pageSize = 10;
+        }
+        long total = userMapper.countAll();
+        List<UserAdminVO> list = userMapper.findAllPage((page - 1) * pageSize, pageSize).stream()
                 .map(UserAdminVO::from)
                 .collect(Collectors.toList());
+        return PageResult.of(list, total, page, pageSize);
     }
 
     @Override

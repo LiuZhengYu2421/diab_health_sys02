@@ -128,6 +128,16 @@
 
 ### 3.3 糖尿病风险预测
 
+**工作流与智能体（已交付）：**
+- 工作流 DSL 文件：`DifyWorkflows/糖尿病风险预测工作流.yml`（在 Dify 平台「导入 DSL」即可重建该应用）。
+- 应用 API Key：`app-at3c96l2zlBP7eo2McFqGC6M`（**后端调用 `workflows/run` 时必须使用该 Key**，作为 `Authorization: Bearer` 携带。已实测：该 Key 对应工作流应用，`user_input_form` 含完整 10 个变量，`workflows/run` 调用成功）。
+- ⚠️ `app-uWmX61iVHt3xksU4ojBKvqly` 经实测**不是工作流应用**（`workflows/run` 返回 `not_workflow_app`，`user_input_form` 为空），**不可**用于后端风险预测调用。
+- **架构（方案 B）**：后端代理 `/api/dify/risk/predict` 接收前端请求 → 转发到 Dify 工作流 `POST /v1/workflows/run` → 解析 `data.outputs.obj = { result, disease }` → 按 `disease` 字段分支：
+  - `disease === "否"`：从 `result` 文本提取风险等级与建议，并按 3.3 节「风险评分表」自行计算 `riskScore` 与 `detail.items`（工作流不输出评分明细，由后端补齐）。
+  - `disease === "是"`：工作流 `result` 为空，**后端兜底**直接返回 `riskLevel = diabetesType`、`advice = 对应类型固定管理建议`，`riskScore = 0`。
+- **前端改造**：`RiskPredictView.vue` 已从 iframe 切换为「档案摘要 + 一键预测 + 结果卡片」三段式布局，调 `riskPredict(data)`（`src/api/dify.js`）即可，Mock 模式默认开启。
+- **工作流数据落地**：Dify 工作流内 `execute_sql` 节点会把每次预测写入 `user_risk_info` 表，`message` 字段存 AI 建议原文，管理员端可查历史记录，**后端无需再写库**。
+
 **`POST /api/dify/risk/predict`**
 
 请求体：
@@ -143,21 +153,71 @@
   "waistline": 86,
   "systolicPressure": 128,
   "isPregnancy": "否",
-  "disease": "无"
+  "disease": "否",
+  "diabetesType": ""
 }
 ```
 
-成功返回 `data`：
+说明：
+- `disease` 表示用户当前是否糖尿病：`"是"` / `"否"`（个人中心「糖尿病预测信息」中填写）。
+- `diabetesType` 仅在 `disease === "是"`（已确诊）时必填，取值：`1型糖尿病` / `2型糖尿病` / `妊娠糖尿病` / `其他类型`。
+- `disease === "是"` 时：不计算风险评分，`riskLevel` 返回糖尿病类型名称，`advice` 返回对应类型的治疗与管理建议。
+- `disease === "否"` 时：按标准风险评分表计算（见下），`riskScore` 返回 0-51 分的总分，`riskLevel` 返回风险等级，`advice` 返回建议文本。
+
+#### 糖尿病风险评分表（适用于 20 - 74 岁普通人群，总分 0 - 51，≥ 25 分为高风险）
+
+| 指标 | 评分规则 |
+| --- | --- |
+| 年龄 | 20-24→0；25-34→4；35-39→8；40-44→11；45-49→12；50-54→13；55-59→15；60-64→16；65-74→18 |
+| 体质指数 BMI | <22.0→0；22.0-23.9→1；24.0-29.9→3；≥30.0→5 |
+| 腰围 | 男 <75.0 / 女 <70.0→0；男 75.0-79.9 / 女 70.0-74.9→3；男 80.0-84.9 / 女 75.0-79.9→5；男 85.0-89.9 / 女 80.0-84.9→7；男 90.0-94.9 / 女 85.0-89.9→8；男 ≥95.0 / 女 ≥90.0→10 |
+| 收缩压 | <110→0；110-119→1；120-129→3；130-139→6；140-149→7；150-159→8；≥160→10 |
+| 糖尿病家族史（父母、同胞、子女） | 无→0；有→6 |
+| 性别 | 女→0；男→2 |
+
+> 腰围与收缩压为**选填项**：未填写时按以下规则推断：
+> - 腰围：男 `base = 0.47 × 身高`；女 `base = 0.45 × 身高`；BMI > 24 时 `腰围 = base × (1 + (BMI - 22) / 10)`
+> - 收缩压：男 BMI<24→115、24≤BMI<28→125、BMI≥28→135；女 BMI<24→110、24≤BMI<28→120、BMI≥28→130
+
+风险等级判定：`总分 ≥ 25` → 高风险；`15 ≤ 总分 < 25` → 中风险；`总分 < 15` → 低风险。
+
+成功返回 `data`（未患病场景）：
 
 ```json
 {
   "riskLevel": "中风险",
-  "riskScore": 45,
-  "advice": "（建议文本）",
+  "riskScore": 16,
+  "advice": "您的糖尿病风险评分为 16 分，风险处于中等水平。建议加强血糖监测，控制精制碳水与高糖食物摄入，坚持每周 150 分钟以上中等强度运动，将体质指数控制在 24 以下，并每年进行一次空腹血糖筛查。",
   "detail": {
+    "total": 16,
     "bmi": "23.0",
-    "waistline": "86",
-    "systolicPressure": "128"
+    "waistline": "82（预测）",
+    "systolicPressure": "125（预测）",
+    "items": [
+      { "key": "age", "label": "年龄", "value": "45 岁", "score": 12 },
+      { "key": "bmi", "label": "体质指数 (BMI)", "value": "23.0 kg/m²", "score": 1 },
+      { "key": "waist", "label": "腰围", "value": "82 cm（预测）", "score": 5 },
+      { "key": "bp", "label": "收缩压", "value": "125 mmHg（预测）", "score": 3 },
+      { "key": "family", "label": "糖尿病家族史", "value": "否", "score": 0 },
+      { "key": "sex", "label": "性别", "value": "男", "score": 2 }
+    ]
+  }
+}
+```
+
+> `detail.items` 为评分指标明细（指标 / 数值 / 分值），前端用于渲染评分明细表；未填写而由公式预测的腰围、收缩压会标注「（预测）」。`detail.total` 与 `riskScore` 一致。
+
+成功返回 `data`（已确诊场景，示例：2 型糖尿病）：
+
+```json
+{
+  "riskLevel": "2型糖尿病",
+  "riskScore": 0,
+  "advice": "2型糖尿病以生活方式干预为基础，注意控制饮食、坚持运动、规律用药，定期复查血糖并筛查心、肾、眼底等并发症。",
+  "detail": {
+    "diabetesType": "2型糖尿病",
+    "age": "45",
+    "familyHistory": "否"
   }
 }
 ```
@@ -256,7 +316,7 @@
 
 前端用于：
 1. 「健康咨询」页按 **一页三个** 的分页卡片列表展示，点击卡片后进入详情；
-2. 「首页」全局搜索：`TeamView.vue` 调用 SpringBoot 业务接口 `GET /articles?keyword=`（复用文章列表接口，**仅搜索健康咨询分类文章**，见《后端接口文档》11.1），点击结果跳转健康咨询详情（`/lifeadvice?open=标题`）。
+2. 「首页」全局搜索：`TeamView.vue` 调用 SpringBoot 业务接口 `GET /articles?keyword=`（复用文章列表接口，查询 `articles` 表，见《后端接口文档》11.1），点击结果跳转健康咨询详情（`/lifeadvice?open=标题`）。
 
 ### 3.7 健康咨询 - 详情模式
 
@@ -332,7 +392,7 @@
 
 > 工作流输出需根据 `userInfo`（个人信息）、`habit`（生活习惯）、`advice`（方案建议）生成个性化 `scheme`。
 
-> 健康咨询搜索（首页搜索栏）由 **SpringBoot 后端直接查询数据库**实现（复用 `GET /articles?keyword=`，**仅搜索健康咨询分类文章**，见《后端接口文档》11.1），**不属于 Dify 代理接口**。
+> 健康咨询搜索（首页搜索栏）由 **SpringBoot 后端直接查询数据库**实现（复用 `GET /articles?keyword=`，查询 `articles` 表，见《后端接口文档》11.1），**不属于 Dify 代理接口**。
 
 ---
 
@@ -413,7 +473,7 @@ dify:
 | `healthDetail(data)` | `/dify/health/detail` | `HealthConsultView.vue` 健康咨询详情（底部可收藏） |
 | `lifeScheme(data)` | `/dify/life/scheme` | `LifeSchemeView.vue` 方案定制 / 个人中心「我的方案」 |
 
-> 首页搜索栏走 **SpringBoot 业务接口**（非 Dify）：复用 `GET /articles?keyword=`（**仅搜索健康咨询分类文章**），前端封装在 `src/api/search.js`，见《后端接口文档》11.1。
+> 首页搜索栏走 **SpringBoot 业务接口**（非 Dify）：复用 `GET /articles?keyword=`，前端封装在 `src/api/search.js`，见《后端接口文档》11.1。
 
 **Mock / 真实模式切换：**
 
@@ -429,9 +489,16 @@ dify:
 ## 六、联调 checklist
 
 - [ ] Dify 平台已创建 2 个对话型 + 6 个工作流型应用，均发布并生成 API Key
-- [ ] 后端 `application.yml` 配置 `dify.base-url` 与全局 API Key
+- [ ] 后端 `application.yml` 配置 `dify.base-url`、全局 API Key、风险预测专用 Key (`dify.risk-key`)
 - [ ] 智能助手 / AI 数据助理等全局应用的 Key 已配置，医师应用的 Key 已录入医生表
 - [ ] `VITE_USE_MOCK` 已按环境切换；前端 8 个页面逐一验证
 - [ ] AI 数据助理工作流输出严格为 `{ message, status, data }` JSON，且已做 SQL 安全校验
 - [ ] 对话型应用多轮上下文（sessionId ↔ conversation_id）正常延续
 - [ ] 错误场景（超时、未配置 chatToken、SQL 失败）提示符合约定
+- [ ] **风险预测 /api/dify/risk/predict 联调**：
+  - [ ] 未患病低风险：评分 < 15，结果 `riskLevel=低风险`、`advice` 含 AI 建议
+  - [ ] 未患病中风险：15 ≤ 评分 < 25
+  - [ ] 未患病高风险：评分 ≥ 25，**`advice` 中出现「您的糖尿病风险评分为 N 分（≥25 分）…」模板**
+  - [ ] **已确诊（disease="是"）兜底**：不调 Dify（实际上工作流也会被调用但 result 为空），`riskLevel=diabetesType`、`riskScore=0`、`advice` 返回 4 种类型对应固定管理建议
+  - [ ] 腰围/收缩压为空时由后端按公式预测，并在 `detail.waistline / detail.systolicPressure` 标注「（预测）」
+  - [ ] `user_risk_info` 表成功写入每次预测记录（`message` 字段存 AI 建议原文）

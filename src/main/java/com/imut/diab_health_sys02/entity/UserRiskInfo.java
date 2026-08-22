@@ -2,6 +2,8 @@ package com.imut.diab_health_sys02.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * 用户风险信息，对应表 user_risk_info
  * 注意：该表主键列名与其它表不同，为驼峰 userId（非 user_id）
@@ -41,4 +43,10 @@ public class UserRiskInfo {
 
     /** 疑似疾病 */
     private String disease;
+
+    /** 糖尿病类型：1型糖尿病 / 2型糖尿病 / 妊娠糖尿病 / 其他类型（仅 disease=是 时填写） */
+    private String diabetesType;
+
+    /** 档案更新时间 */
+    private LocalDateTime updatedAt;
 }

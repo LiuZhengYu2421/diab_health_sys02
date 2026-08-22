@@ -37,4 +37,7 @@ public class RiskInfoRequest {
 
     /** 疑似疾病 */
     private String disease;
+
+    /** 糖尿病类型：1型糖尿病 / 2型糖尿病 / 妊娠糖尿病 / 其他类型（仅 disease=是 时填写） */
+    private String diabetesType;
 }

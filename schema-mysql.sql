@@ -11,7 +11,7 @@
  Target Server Version : 80041 (8.0.41)
  File Encoding         : 65001
 
- Date: 19/08/2026 15:55:43
+ Date: 21/08/2026 20:33:49
 */
 
 SET NAMES utf8mb4;
@@ -93,11 +93,16 @@ CREATE TABLE `doctor_information`  (
   `image_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `chat_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`info_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of doctor_information
 -- ----------------------------
+INSERT INTO `doctor_information` VALUES (1, '张明华', '内分泌科', '主任医师', '2型糖尿病个体化治疗', NULL, NULL);
+INSERT INTO `doctor_information` VALUES (2, '李秀芬', '内分泌科', '副主任医师', '糖尿病前期干预、妊娠糖尿病', NULL, NULL);
+INSERT INTO `doctor_information` VALUES (3, '王建国', '内分泌科', '主任医师', '1型糖尿病、糖尿病肾病', NULL, NULL);
+INSERT INTO `doctor_information` VALUES (4, '陈雅琴', '营养科', '副主任医师', '糖尿病医学营养治疗', NULL, NULL);
+INSERT INTO `doctor_information` VALUES (5, '刘志远', '内分泌科', '主治医师', '青少年糖尿病、动态血糖监测', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for life_advice
@@ -175,14 +180,19 @@ CREATE TABLE `user_risk_info`  (
   `isPregnancy` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `disease` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `diabetesType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '糖尿病类型',
+  `updated_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`userId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_risk_info
 -- ----------------------------
-INSERT INTO `user_risk_info` VALUES (1, 45, '男', 170, 65, '无', 80, 120, '否', '1787104563227.result', '无');
-INSERT INTO `user_risk_info` VALUES (2, 28, '男', 176, 82, '爷爷患有糖尿病', 119.71, 125, '否', '【低风险】您的糖尿病风险评分为22分，低于25分，目前属于低风险人群。建议您保持健康生活方式，定期体检，关注血糖、血压和体重变化。您的腰围较大，建议适当控制体重，增加运动，减少腹部脂肪堆积。', '否');
+INSERT INTO `user_risk_info` VALUES (1, 45, '男', 165, 98, '爷爷有糖尿病', 186.09, 135, '否', '1787104563227.result', '无', NULL, NULL);
+INSERT INTO `user_risk_info` VALUES (2, 28, '男', 176, 82, '爷爷患有糖尿病', 119.71, 125, '否', '【低风险】您的糖尿病风险评分为22分，低于25分，目前属于低风险人群。建议您保持健康生活方式，定期体检，关注血糖、血压和体重变化。您的腰围较大，建议适当控制体重，增加运动，减少腹部脂肪堆积。', '否', NULL, NULL);
+INSERT INTO `user_risk_info` VALUES (3, 28, '男', 150, 98, '否', 83.66, 115, '否', '【低风险】“风险较低，但建议定期体检并保持健康生活方式。”]', '否', NULL, '2026-08-21 19:31:13');
+INSERT INTO `user_risk_info` VALUES (4, 50, '男', 182, 58, '否', 85.54, 115, '否', '【低风险】您的糖尿病风险评分为23分，低于25分，属于低风险。建议您继续保持健康生活方式，定期体检，关注血糖、血压等指标，并维持合理饮食和适量运动。', '否', NULL, '2026-08-21 19:37:36');
+INSERT INTO `user_risk_info` VALUES (9, 52, '男', 172, 78, '有', 92, 138, '否', NULL, '是', '2型糖尿病', '2026-08-19 16:50:08');
 
 -- ----------------------------
 -- Table structure for users
@@ -200,7 +210,7 @@ CREATE TABLE `users`  (
   `status` tinyint NOT NULL DEFAULT 0 COMMENT '状态：0正常 1已删除',
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE INDEX `username`(`username` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
@@ -212,5 +222,9 @@ INSERT INTO `users` VALUES (4, 'hzp', 'hzp', '', '$2a$10$LwSVkHyUAd7JxV8XcMDw6.B
 INSERT INTO `users` VALUES (5, 'test', '测试用户', NULL, '$2a$10$hBzPCCjF/Z1AkiNtcoZkAeXL6d4N8NWN0zU/HL40ExczmRpf80yVu', '/img/user_icon.png', 'user', '2026-08-13 11:38:07', 0);
 INSERT INTO `users` VALUES (6, 'addUser', 'addUser', NULL, '$2a$10$.iachUCJnoXPENNZHI5pC.5OBdE3ymA1aDfezicQjPGCEuNph3bwi', '/img/user_icon.png', 'user', '2026-08-15 19:25:36', 0);
 INSERT INTO `users` VALUES (7, 'mcptest', 'mcptest', NULL, '123456', NULL, 'admin', '2026-08-18 21:43:14', 0);
+INSERT INTO `users` VALUES (9, 'apitest6738', 'apitest', NULL, '$2a$10$tGLhUAXs2.FBVfv6zn3GPuG8n3ZOtXugqSI/jxvuhnvLe6Nqk6qgi', '/img/user_icon.png', 'user', '2026-08-19 16:50:08', 0);
+INSERT INTO `users` VALUES (10, 'apitest3680', 'apitest', NULL, '$2a$10$0L4Ad6dfEmIB22R.Ok4tIOoPX9ufsQ4JpvWA9slz4W50oIq3Jn2ki', '/img/user_icon.png', 'user', '2026-08-19 16:50:20', 0);
+INSERT INTO `users` VALUES (11, 'apitest7482', 'apitest', NULL, '$2a$10$EMLOZjTRVNXAGpc7ElJn6.wmyyuB.YlL6gni8bBDnRd2I3uHXdMGy', '/img/user_icon.png', 'user', '2026-08-19 16:53:25', 0);
+INSERT INTO `users` VALUES (12, 'jwq', '麻辣小麻花', NULL, '$2a$10$vCUC2zN6A7OePtxqtiF13uvMPg5ke1M5nz6.yt2Jrd9Ue3Xc.7f8S', '/img/user_icon.png', 'user', '2026-08-19 20:02:01', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;

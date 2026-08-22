@@ -4,6 +4,7 @@ import com.imut.diab_health_sys02.entity.User;
 import lombok.Data;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  * 返回给前端的用户信息（userInfo）
@@ -24,6 +25,12 @@ public class UserInfoVO {
     private String role;
 
     private String createdAt;
+
+    /**
+     * 糖尿病预测健康档案（来自 user_risk_info 表）。
+     * 未填写时返回 null，前端按「未填写」优雅降级。
+     */
+    private Map<String, Object> healthInfo;
 
     public static UserInfoVO from(User user) {
         UserInfoVO vo = new UserInfoVO();

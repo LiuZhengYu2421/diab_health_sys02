@@ -8,7 +8,9 @@ import com.imut.diab_health_sys02.dto.RegisterRequest;
 import com.imut.diab_health_sys02.dto.UpdateUserRequest;
 import com.imut.diab_health_sys02.dto.UserInfoVO;
 import com.imut.diab_health_sys02.entity.User;
+import com.imut.diab_health_sys02.entity.UserRiskInfo;
 import com.imut.diab_health_sys02.mapper.UserMapper;
+import com.imut.diab_health_sys02.mapper.UserRiskInfoMapper;
 import com.imut.diab_health_sys02.service.UserService;
 import com.imut.diab_health_sys02.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Service
@@ -25,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[\\w\\u4e00-\\u9fa5-]{3,20}$");
 
     private final UserMapper userMapper;
+    private final UserRiskInfoMapper riskInfoMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -76,7 +82,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoVO getUserInfo(Integer userId) {
-        return UserInfoVO.from(requireUser(userId));
+        UserInfoVO vo = UserInfoVO.from(requireUser(userId));
+        vo.setHealthInfo(toHealthInfoMap(riskInfoMapper.findByUserId(userId)));
+        return vo;
     }
 
     @Override
@@ -92,7 +100,11 @@ public class UserServiceImpl implements UserService {
             user.setDescription(request.getDesc());
         }
         userMapper.updateInfo(user);
-        return UserInfoVO.from(user);
+        // 健康档案落库：user_risk_info 表（与 Dify 工作流共用，userId 主键 upsert）
+        if (request.getHealthInfo() != null && !request.getHealthInfo().isEmpty()) {
+            riskInfoMapper.upsert(toUserRiskInfo(userId, request.getHealthInfo()));
+        }
+        return getUserInfo(userId);
     }
 
     @Override
@@ -126,6 +138,75 @@ public class UserServiceImpl implements UserService {
 
     private LoginResult buildLoginResult(User user) {
         String token = jwtUtil.generateToken(user.getUserId(), user.getUsername(), user.getRole());
-        return new LoginResult(token, UserInfoVO.from(user));
+        UserInfoVO vo = UserInfoVO.from(user);
+        vo.setHealthInfo(toHealthInfoMap(riskInfoMapper.findByUserId(user.getUserId())));
+        return new LoginResult(token, vo);
+    }
+
+    /** 实体 -> healthInfo Map（返回给前端）；无档案返回 null */
+    private Map<String, Object> toHealthInfoMap(UserRiskInfo info) {
+        if (info == null) {
+            return null;
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("disease", info.getDisease());
+        map.put("diabetesType", info.getDiabetesType());
+        map.put("sex", info.getSex());
+        map.put("age", info.getAge());
+        map.put("height", info.getHeight());
+        map.put("weight", info.getWeight());
+        map.put("familyHistory", info.getFamilyHistory());
+        map.put("waistline", info.getWaistline());
+        map.put("systolicPressure", info.getSystolicPressure());
+        map.put("isPregnancy", info.getIsPregnancy());
+        return map;
+    }
+
+    /** 请求体 healthInfo Map -> 实体（userId 主键，写 updated_at） */
+    private UserRiskInfo toUserRiskInfo(Integer userId, Map<String, Object> h) {
+        UserRiskInfo info = new UserRiskInfo();
+        info.setUserId(userId);
+        info.setDisease(asString(h.get("disease")));
+        info.setDiabetesType(asString(h.get("diabetesType")));
+        info.setSex(asString(h.get("sex")));
+        info.setAge(asInteger(h.get("age")));
+        info.setHeight(asDouble(h.get("height")));
+        info.setWeight(asDouble(h.get("weight")));
+        info.setFamilyHistory(asString(h.get("familyHistory")));
+        info.setWaistline(asDouble(h.get("waistline")));
+        info.setSystolicPressure(asDouble(h.get("systolicPressure")));
+        info.setIsPregnancy(asString(h.get("isPregnancy")));
+        info.setUpdatedAt(LocalDateTime.now());
+        return info;
+    }
+
+    private String asString(Object o) {
+        if (o == null) return null;
+        String s = String.valueOf(o).trim();
+        return s.isEmpty() ? null : s;
+    }
+
+    private Integer asInteger(Object o) {
+        if (o == null) return null;
+        if (o instanceof Number) return ((Number) o).intValue();
+        String s = String.valueOf(o).trim();
+        if (s.isEmpty()) return null;
+        try {
+            return Double.valueOf(s).intValue();
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Double asDouble(Object o) {
+        if (o == null) return null;
+        if (o instanceof Number) return ((Number) o).doubleValue();
+        String s = String.valueOf(o).trim();
+        if (s.isEmpty()) return null;
+        try {
+            return Double.valueOf(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

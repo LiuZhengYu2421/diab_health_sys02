@@ -7,6 +7,8 @@ import com.imut.diab_health_sys02.service.RiskInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class RiskInfoServiceImpl implements RiskInfoService {
@@ -32,6 +34,8 @@ public class RiskInfoServiceImpl implements RiskInfoService {
         info.setIsPregnancy(request.getIsPregnancy());
         info.setMessage(request.getMessage());
         info.setDisease(request.getDisease());
+        info.setDiabetesType(request.getDiabetesType());
+        info.setUpdatedAt(LocalDateTime.now());
         riskInfoMapper.upsert(info);
         return userId;
     }
